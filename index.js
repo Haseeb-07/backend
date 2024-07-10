@@ -2,22 +2,21 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const Task = require('./models/task');
-require('dotenv').config();
-
+const path = require("path");
 const app = express();
 const port = process.env.PORT || 3001;
-const BASE_URL = process.env.BASE_URL;
 
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb+srv://haseeb:haseeb123@cluster0.m4ivpbe.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error(err));
 
-app.get('/', (req, res) => {
-  res.send('API is running');
-});
+  app.get("/", (req, res) => {
+    app.use(express.static(path.resolve(__dirname, "frontend", "build")));
+    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
+  });
 
 app.post('/tasks', async (req, res) => {
   try {
